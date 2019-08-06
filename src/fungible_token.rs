@@ -28,21 +28,25 @@ impl FungibleToken {
 
      pub fn get_balance_of(&self, owner: String) -> &u64 {
           let owner = owner.into_bytes();
-          let balance =  self.balances.get(&owner).unwrap_or_default();
+          let balance = self.balances.get(&owner).unwrap_or(&0);
+          return balance;
      }
 
      pub fn transfer(&mut self, to: String, amount: u64) -> bool{
           let from_id = ENV.originator_id();
-          let from_balance = self.balances.get(&from_id).unwrap_or_default();
+          let from_balance = self.balances.get(&from_id).unwrap_or(&0);
+          if from_balance < &amount {return false};
           let to_id= to.into_bytes();
-          let to_balance= self.balances.get(&to_id).unwrap_or_default();
-          self.balances.insert(from_id, from_balance - amount);
-          self.balances.insert(to_id, to_balance + amount);
+          let to_balance= self.balances.get(&to_id).unwrap_or(&0);
+
+          let new_from_balance = from_balance - amount;
+          let new_to_balance = to_balance + amount;
+
+          self.balances.insert(from_id, new_from_balance);
+          self.balances.insert(to_id, new_to_balance);
           return true;
      }
 }
-
-
 
 #[test]
 fn setupAndTransferToken() {
