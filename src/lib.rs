@@ -5,4 +5,4 @@
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 #[macro_use]
-mod unlimited_allowance_token;
+mod fungible_token;
